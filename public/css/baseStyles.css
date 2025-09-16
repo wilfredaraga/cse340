@@ -60,12 +60,13 @@
 h1 {
   margin: 1.5rem;
   font-family: var(--header-font);
+  font-size: 1.5rem;
 }
 #hero {
   position: relative;
 }
 #hero-image {
-    background-image: url('../images/vehicles/delorean-tn.jpg');
+    background-image: url('../images/vehicles/delorean.jpg');
     background-size: cover;
     background-position: center;
     width: 100%;
