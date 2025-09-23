@@ -12,12 +12,18 @@
     border-radius: 20px;
   }
   #main {
-    display: flex;
     flex-direction: row-reverse;
     flex-wrap: nowrap;;
   }
   #reviews, #upgrades {
     flex: 1;
     margin: .5rem 0 0 1rem;
+  }
+
+/******* Vehicle Detail View ***************/
+  #vehicleDetail {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 1rem;
   }
 }
