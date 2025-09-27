@@ -239,8 +239,8 @@ input[type="submit"] {
   font-weight: bold;
   cursor: pointer;
   padding: .8rem;
+  max-width: 250px;
   margin-bottom: .5rem;
-  max-width: 150px;
   justify-self: center;
 }
 form p {
@@ -254,4 +254,11 @@ input:required:valid {
 }
 form span {
   font-size: 16px;
+}
+
+/******* Management View ***************/
+#management {
+  list-style-position: inside;
+  margin: 1rem;
+  padding-left: 1rem;
 }
