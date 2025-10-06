@@ -243,6 +243,12 @@ input[type="submit"] {
   margin-bottom: .5rem;
   justify-self: center;
 }
+input[type="submit"]:disabled {
+  background-color: #99e1d9ac;
+  border: 1px solid rgb(83, 83, 83);
+  color: rgb(83, 83, 83);
+  cursor: not-allowed;
+}
 form p {
   justify-self: center;
 }
@@ -255,10 +261,28 @@ input:required:valid {
 form span {
   font-size: 16px;
 }
-
+select {
+  width: 350px;
+}
 /******* Management View ***************/
 #management {
   list-style-position: inside;
   margin: 1rem;
   padding-left: 1rem;
+}
+
+#invManagement{
+  margin: 1rem;
+}
+#invManagement div{
+  margin-left: 1rem;
+}
+
+#inventoryDisplay {
+  margin: 1rem;
+  border: 1px solid var(--secondary-color);
+}
+
+#inventoryDisplay th, #inventoryDisplay td {
+  padding: .7rem;
 }
