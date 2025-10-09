@@ -120,12 +120,130 @@ async function accountLogin(req, res) {
 
 async function buildAccountManagement(req, res, next) {
   let nav = await utilities.getNav()
+  const { account_firstname, account_type, account_id } = res.locals.accountData
   res.render("account/account-management", {
-    title: "You're Logged In",
+    title: "Account Management",
     nav,
+    account_firstname,
+    account_type,
+    account_id,
     errors: null,
   })
 }
 
+async function buildEditAccount(req, res, next) {
+  let nav = await utilities.getNav()
+  const account_id = parseInt(req.params.account_id)
+  const accountData = await accountModel.getAccountById(account_id)
+  if (res.locals.accountData.account_id !== account_id) {
+    req.flash("notice", "You can only edit your own account.")
+    return res.redirect("/account/")
+  }
+  res.render("account/edit-account", {
+    title: "Edit Account",
+    nav,
+    account_firstname: accountData.account_firstname,
+    account_lastname: accountData.account_lastname,
+    account_email: accountData.account_email,
+    account_id: accountData.account_id,
+    errors: null,
+  })
+}
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement }
+/* ****************************************
+ *  Process Edit Account
+ * ************************************ */
+async function editAccount(req, res) {
+  let nav = await utilities.getNav()
+  const { account_firstname, account_lastname, account_email, account_id } = req.body
+  
+  const editResult = await accountModel.editAccount(
+    account_firstname,
+    account_lastname,
+    account_email,
+    account_id
+  )
+  if (editResult) {
+    req.flash("notice", `Congratulations, you\'ve successfully updated your account ${account_firstname}.`)
+    res.status(201).render("account/account-management", {
+      title: "Account Management",
+      nav,
+      account_firstname,
+      account_type: res.locals.accountData.account_type,
+      account_id,
+      errors: null,
+    })
+  } else {
+    req.flash("notice", "Sorry, the update failed.")
+    res.status(501).render("account/edit-account", {
+      title: "Edit Account",
+      nav,
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id,
+      errors: null,
+    })
+  }
+}
+
+/* ****************************************
+ *  Edit Password
+ * ************************************ */
+async function editPassword(req, res) {
+  let nav = await utilities.getNav()
+  const { account_password, account_id } = req.body
+  let hashedPassword
+  try {
+    // regular password and cost (salt is generated automatically)
+    hashedPassword = await bcrypt.hashSync(account_password, 10)
+  } catch (error) {
+    req.flash("notice", 'Sorry, there was an error processing the password change.')
+    res.status(500).render("account/edit-account", {
+      title: "Edit Account",
+      nav,
+      account_firstname: res.locals.accountData.account_firstname,
+      account_lastname: res.locals.accountData.account_lastname,
+      account_email: res.locals.accountData.account_email,
+      errors: null,
+      account_id,
+    })
+  }
+  const editResult = await accountModel.editPassword(
+    hashedPassword,
+    account_id
+  )
+  if (editResult) {
+    req.flash("notice", `Congratulations, you\'ve successfully updated your password.`)
+    res.status(201).render("account/account-management", {
+      title: "Account Management",
+      nav,
+      account_firstname: res.locals.accountData.account_firstname,
+      account_type: res.locals.accountData.account_type,
+      account_id,
+      errors: null,
+    })
+  } else {
+    req.flash("notice", "Sorry, the password update failed.")
+    res.status(501).render("account/edit-account", {
+      title: "Edit Account",
+      nav,
+      account_firstname: res.locals.accountData.account_firstname,
+      account_lastname: res.locals.accountData.account_lastname,
+      account_email: res.locals.accountData.account_email,
+      errors: null,
+      account_id,
+    })
+  }
+}
+
+/* ****************************************
+ *  Process Logout
+ * ************************************ */
+async function accountLogout(req, res) {
+  res.clearCookie("jwt")
+  req.flash("notice", "You have been logged out.")
+  res.redirect("/")
+}
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, buildEditAccount, editAccount, editPassword, accountLogout }

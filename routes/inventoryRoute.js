@@ -17,15 +17,15 @@ router.get("/detail/:invId", utilities.handleErrors(invController.buildByInvId))
 router.get("/error", utilities.handleErrors(invController.buildByInvIdError));
 
 // Route to management view
-router.get("/", utilities.handleErrors(invController.buildManagement));
+router.get("/", utilities.checkAdmin, utilities.handleErrors(invController.buildManagement));
 
 // Route to add classification view
-router.get("/addClass", utilities.handleErrors(invController.buildAddClassification));
+router.get("/addClass", utilities.checkAdmin , utilities.handleErrors(invController.buildAddClassification));
 // Rpute to process add classification view
 router.post("/addClass", validate.addClassificationRules(), validate.checkAddClassificationData, utilities.handleErrors(invController.addClassification));
 
 // Route to add inventory view
-router.get("/addInventory", utilities.handleErrors(invController.buildAddInventory));
+router.get("/addInventory", utilities.checkAdmin , utilities.handleErrors(invController.buildAddInventory));
 // Route to process add inventory view
 router.post("/addInventory", validate.addInventoryRules(), validate.checkAddInventoryData, utilities.handleErrors(invController.addInventory));
 
@@ -33,12 +33,12 @@ router.post("/addInventory", validate.addInventoryRules(), validate.checkAddInve
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
 
 // Route to build the edit inventory view
-router.get("/edit/:inv_id", utilities.handleErrors(invController.buildEditInventory));
+router.get("/edit/:inv_id", utilities.checkLogin, utilities.checkAdmin , utilities.handleErrors(invController.buildEditInventory));
 // Route to process edit inventory view
 router.post("/edit/", validate.editInventoryRules(), validate.checkEditInventoryData, utilities.handleErrors(invController.editInventory))
 
 // Route to delete confirmation view
-router.get("/delete/:inv_id", utilities.handleErrors(invController.buildDeleteInventory));
+router.get("/delete/:inv_id", utilities.checkAdmin , utilities.handleErrors(invController.buildDeleteInventory));
 // Route to delete the vehicle
 router.post("/delete/", utilities.handleErrors(invController.deleteInventory));
 

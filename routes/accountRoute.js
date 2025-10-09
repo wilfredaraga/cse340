@@ -27,4 +27,14 @@ router.post(
 // Logged in user route
 router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement))
 
+// Edit account view route
+router.get("/edit/:account_id", utilities.checkLogin, utilities.handleErrors(accountController.buildEditAccount))
+// Process the edit account info
+router.post("/editInfo", regValidate.editAccountRules(), regValidate.checkEditAccountData, utilities.handleErrors(accountController.editAccount))
+// Edit password
+router.post("/editPass", regValidate.editPasswordRules(), regValidate.checkEditPasswordData, utilities.handleErrors(accountController.editPassword))
+
+// Process the logout
+router.get("/logout", accountController.accountLogout)
+
 module.exports = router

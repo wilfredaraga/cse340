@@ -146,4 +146,13 @@ Util.checkJWTToken = (req, res, next) => {
   }
  }
 
+ Util.checkAdmin = (req, res, next) => {
+  if (res.locals.accountData.account_type !== "Client") {
+    next()
+  } else {
+    req.flash("notice", "You do not have permission to access that page.")
+    return res.redirect("/account/login")
+  }
+  }
+
 module.exports = Util

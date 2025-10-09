@@ -29,8 +29,8 @@
   padding: 1rem;
   font-family: var(--header-font);
 }
-#tools {
-  padding: 1rem;
+#tools a{
+  padding: .2rem;
 }
 
 /******* Navigation ***************/
@@ -274,7 +274,7 @@ select {
 #invManagement{
   margin: 1rem;
 }
-#invManagement div{
+#accManagement{
   margin-left: 1rem;
 }
 
