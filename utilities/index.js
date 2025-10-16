@@ -146,6 +146,9 @@ Util.checkJWTToken = (req, res, next) => {
   }
  }
 
+/* ****************************************
+ *  Check Admin
+ * ************************************ */
  Util.checkAdmin = (req, res, next) => {
   if (res.locals.accountData.account_type !== "Client") {
     next()
@@ -154,5 +157,56 @@ Util.checkJWTToken = (req, res, next) => {
     return res.redirect("/account/login")
   }
   }
+
+/* ***************************
+ *  Build Comments
+ * ************************** */
+Util.getCommentsByInvId = async function(inv_id) {
+  let commentsData = await invModel.getCommentsByInvId(inv_id);
+  let comments = ''
+  if (commentsData.length > 0) {
+    comments += '<div id="commentsSection">'
+    comments += '<h2>Customer Reviews</h2>'
+    commentsData.forEach(comment => {
+      let formattedDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit' }).format(comment.comment_date)
+      comments += '<div class="commentBox">'
+      comments += '<h3>' + comment.account_firstname + ' ' + comment.account_lastname + '<span> wrote on ' + formattedDate + '</span></h3>'
+      comments += '<p>' + comment.comment_text + '</p>'
+      comments += '</div>'
+    })
+    comments += '</div>'
+  } else {
+    comments += '<div id="commentsSection">'
+    comments += '<h2>Customer Reviews</h2>'
+    comments += '<p class="notice">No reviews yet. Be the first to write a review!</p>'
+    comments += '</div>'
+  }
+  return comments
+}
+
+/* ***************************
+ *  Build Comments
+ * ************************** */
+Util.getComments = async function(commentsData) {
+  let comments = ''
+  if (commentsData.length > 0) {
+    comments += '<div id="commentsSection">'
+    comments += '<h2>Your Reviews</h2>'
+    commentsData.forEach(comment => {
+      let formattedDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit' }).format(comment.comment_date)
+      comments += '<div class="commentBox">'
+      comments += '<h3>' + comment.inv_make + ' ' + comment.inv_model + '<span> reviewed on ' + formattedDate + '</span></h3>'
+      comments += '<p>' + comment.comment_text + '</p>'
+      comments += '</div>'
+    })
+    comments += '</div>'
+  } else {
+    comments += '<div id="commentsSection">'
+    comments += '<h2>Your Reviews</h2>'
+    comments += '<p class="notice">You have not written any reviews yet.</p>'
+    comments += '</div>'
+  }
+  return comments
+}
 
 module.exports = Util

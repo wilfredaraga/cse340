@@ -27,6 +27,7 @@ invCont.buildByInvId = async function (req, res, next) {
   const data = await invModel.getInventoryByInvId(inv_id)
   let nav = await utilities.getNav()
   const vehicle = await utilities.buildVehicleDetail(data)
+  const comments = await utilities.getCommentsByInvId(inv_id);
   let vehicleName
   if(data.length > 0){
     vehicleName = `${data[0].inv_year} ${data[0].inv_make} ${data[0].inv_model}`
@@ -36,7 +37,9 @@ invCont.buildByInvId = async function (req, res, next) {
   res.render("./inventory/detail", {
     title: vehicleName,
     nav,
+    inv_id: data[0].inv_id,
     vehicle,
+    comments,
   })
 }
 
@@ -322,6 +325,55 @@ invCont.deleteInventory = async function (req, res, next) {
     inv_model,
     inv_year,
     inv_price,
+    })
+  }
+}
+
+/* ***************************
+ *  Build add comment view
+ * ************************** */
+invCont.buildAddComment = async function (req, res, next) {
+  let inv_id = parseInt(req.params.inv_id)
+  let nav = await utilities.getNav()
+  let itemData = await invModel.getInventoryByInvId(inv_id)
+  console.log(itemData.inv_make)
+  let itemName = `${itemData[0].inv_make} ${itemData[0].inv_model}`
+  res.render("inventory/add-comment", {
+    title: "Add Comment for " + itemName,
+    nav,
+    errors: null,
+    inv_id: itemData[0].inv_id,
+  })
+}
+
+/* ***************************
+ *  Add a comment
+ * ************************** */
+invCont.addComment = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const {
+    inv_id,
+    comment_text
+  } = req.body
+  const account_id = res.locals.accountData.account_id
+  const addResult = await invModel.addComment(
+    inv_id,  
+    account_id,
+    comment_text,
+  )
+  let itemData = await invModel.getInventoryByInvId(inv_id)
+  if (addResult) {
+    req.flash("notice", `Your comment was successfully added.`)
+    res.redirect("/inv/detail/" + inv_id)
+  } else {
+    const itemName = `${itemData[0].inv_make} ${itemData[0].inv_model}`
+    req.flash("notice", "Sorry, adding your comment failed.")
+    res.status(501).render("inventory/add-comment", {
+    title: "Add Comment for " + itemName,
+    nav,
+    errors: null,
+    inv_id,
+    comment_text
     })
   }
 }

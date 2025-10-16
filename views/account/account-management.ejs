@@ -18,12 +18,16 @@
 <h2>Welcome <%= locals.account_firstname %>!</h2>
 <div id="accManagement">
   <p>You're logged in.</p>
-  <a href="/account/edit/<%= locals.account_id %>" alt="Edit Account" id="editAccount">Edit Account Information</a>
+  <a href="/account/edit/<%= locals.account_id %>" id="editAccount">Edit Account Information</a>
 </div>
 
 <% if (locals.account_type !== "Client") { %>
   <section id="invManagement">
     <h3>Inventory Management</h3>
-    <p><a href="/inv" alt="Manage Inventory">Manage Inventory</a></p>
+    <p><a href="/inv">Manage Inventory</a></p>
   </section>
 <% } %>
+
+<div id="comments-section">
+  <%- comments %>
+</div>

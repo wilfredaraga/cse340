@@ -42,4 +42,9 @@ router.get("/delete/:inv_id", utilities.checkAdmin , utilities.handleErrors(invC
 // Route to delete the vehicle
 router.post("/delete/", utilities.handleErrors(invController.deleteInventory));
 
+// Route to add comment view
+router.get("/addComment/:inv_id", utilities.checkLogin, utilities.handleErrors(invController.buildAddComment));
+// Route to add a comment
+router.post("/addComment", validate.addCommentRules(), validate.checkAddCommentData, utilities.handleErrors(invController.addComment));
+
 module.exports = router;

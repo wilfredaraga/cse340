@@ -144,4 +144,36 @@ async function deleteInventory(inv_id) {
   }
 }
 
-module.exports = { getClassifications , getClassificationById, getInventoryByClassificationId, getInventoryByInvId, addClassification, addInventory, editInventory, deleteInventory }
+/* ***************************
+ *  Export comments
+  * ************************** */
+async function getCommentsByInvId(inv_id) {
+  try {
+    const sql = `SELECT c.comment_id, c.inv_id, c.account_id, c.comment_text, c.comment_date, a.account_firstname, a.account_lastname
+    FROM public.comments AS c
+    JOIN public.account AS a
+    ON c.account_id = a.account_id
+    WHERE c.inv_id = $1
+    ORDER BY c.comment_date DESC`
+    const data = await pool.query(sql, [inv_id])
+    return data.rows
+  } catch (error) {
+    console.error("getCommentsByInvId error " + error)
+    return error.message
+  }
+}
+
+/* ***************************
+ *  Add a comment
+ * ************************** */
+async function addComment(inv_id, account_id, comment_text) {
+  try {
+    const sql = `INSERT INTO public.comments (inv_id, account_id, comment_text) VALUES ($1, $2, $3) RETURNING *`
+    return await pool.query(sql, [inv_id, account_id, comment_text])
+  } catch (error) {
+    console.error("addComment error " + error)
+    return error.message
+  }
+}
+
+module.exports = { getClassifications , getClassificationById, getInventoryByClassificationId, getInventoryByInvId, addClassification, addInventory, editInventory, deleteInventory, getCommentsByInvId, addComment }

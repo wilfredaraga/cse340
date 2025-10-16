@@ -90,4 +90,22 @@ async function editPassword(account_password, account_id){
   }
 }
 
-module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, editAccount, editPassword, checkExistingEmailEdit }
+/* *****************************
+* Return comments by account_id
+* ***************************** */
+async function getCommentsByAccountId (account_id) {
+  try {
+    const result = await pool.query(
+      `SELECT c.comment_id, c.comment_text, c.comment_date, i.inv_make, i.inv_model, i.inv_year
+       FROM comments c
+       JOIN inventory i ON c.inv_id = i.inv_id
+        WHERE c.account_id = $1
+        ORDER BY c.comment_date DESC`,
+      [account_id])
+    return result.rows
+  } catch (error) {
+    return new Error("No comments found")
+  }
+}
+
+module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, editAccount, editPassword, checkExistingEmailEdit, getCommentsByAccountId }

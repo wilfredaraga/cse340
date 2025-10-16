@@ -1,0 +1,23 @@
+<%# Content Heading %>
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%- messages() %>
+
+<% if (errors) { %>
+  <ul class="notice">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
+
+<form action="/inv/addComment" method="post">
+    <label for="comment_text">Comment:</label><br>
+    <textarea id="comment_text" name="comment_text" rows="4" cols="50" required><%= locals.comment_text %></textarea>
+    <input type="submit" value="Submit Comment">
+    <input type="hidden" name="inv_id" value="<%= locals.inv_id %>">
+</form>

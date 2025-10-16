@@ -5,6 +5,14 @@
   res.redirect('/')
 } %>
 
-<%# messages() %>
+<%- messages() %>
 
 <%- vehicle %>
+<div id="comments-section">
+  <%- comments %>
+  <% if (locals.loggedin) { %>
+    <a href="/inv/addComment/<%= locals.inv_id %>">Add Comment</a>
+  <% } else {%>
+    <p>Please <a href="/account/login">login</a> to add a comment.</p>
+  <% } %>
+</div>

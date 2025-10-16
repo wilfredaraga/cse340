@@ -270,4 +270,45 @@ validate.checkEditInventoryData = async (req, res, next) => {
     next()
 }
 
+/* ******************************
+* Add Comment Data Validation Rules
+* ***************************** */
+validate.addCommentRules = () => {
+    return [
+        // comment_text is required and must be string
+        body("comment_text")
+        .trim()
+        .escape()
+        .notEmpty()
+        .isLength({ min: 5 })
+        .withMessage("Please provide a valid comment."), // on error this message is sent.
+        // inv_id is required
+        body("inv_id")
+        .trim()
+        .escape()
+        .notEmpty()
+    ]
+}
+
+/* ******************************
+ * Check data and return errors or continue to add comment
+ * ***************************** */
+validate.checkAddCommentData = async (req, res, next) => {
+    const {comment_text, inv_id} = req.body
+    const data = await invModel.getInventoryByInvId(inv_id);
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        res.render("inventory/add-comment", {
+            title: "Add Comment for " + data[0].inv_make + " " + data[0].inv_model,
+            nav,
+            errors,
+            comment_text,
+            inv_id
+        })
+        return
+    }
+    next()
+}
+
 module.exports = validate
